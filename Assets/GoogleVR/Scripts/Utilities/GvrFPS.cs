@@ -14,6 +14,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+//using System.Collections;
 
 [RequireComponent(typeof(Text))]
 public class GvrFPS : MonoBehaviour {
@@ -41,13 +42,28 @@ public class GvrFPS : MonoBehaviour {
     }
   }
 
+   void Update()
+    {
+       
+
+    }
   void LateUpdate() {
-    float deltaTime = Time.unscaledDeltaTime;
-    float interp = deltaTime / (0.5f + deltaTime);
-    float currentFPS = 1.0f / deltaTime;
-    fps = Mathf.Lerp(fps, currentFPS, interp);
-    float msf = MS_PER_SEC / fps;
-    textField.text = string.Format(DISPLAY_TEXT_FORMAT,
-        msf.ToString(MSF_FORMAT), Mathf.RoundToInt(fps));
-  }
+
+        if (GvrController.IsTouching)
+        {
+
+            fps = 100;
+            float msf = MS_PER_SEC / fps;
+            textField.text = string.Format(DISPLAY_TEXT_FORMAT,
+                msf.ToString(MSF_FORMAT), Mathf.RoundToInt(fps));
+        } else {
+            float deltaTime = Time.unscaledDeltaTime;
+            float interp = deltaTime / (0.5f + deltaTime);
+            float currentFPS = 1.0f / deltaTime;
+            fps = Mathf.Lerp(fps, currentFPS, interp);
+            float msf = MS_PER_SEC / fps;
+            textField.text = string.Format(DISPLAY_TEXT_FORMAT,
+                msf.ToString(MSF_FORMAT), Mathf.RoundToInt(fps));
+        }
+    }
 }
