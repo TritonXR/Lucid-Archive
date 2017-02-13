@@ -4,48 +4,64 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class Char_Movement : MonoBehaviour
 {
-    // How fast to move
-    public float speed = 3.0F;
-    // Should I move forward or not
-    public bool moveForward;
-    // CharacterController script
-    private CharacterController controller;
-    // GvrViewer Script
-    private GvrViewer gvrViewer;
-    // VR Head
-    private Transform vrHead;
+
+    //Vr main camera
+    public Transform vrCamera;
+
+    //Angle which the walk stop will be triggered
+    public float toggleAngle = 30.0f;
+
+    //Stop / move
+    bool moveForward;
+
+    // Speed
+    float speed = 3.0f;
+
+    //acces the character controller
+    private CharacterController cc;
+
+
+
+   
 
     // Use this for initialization
     void Start()
     {
         // Find the CharacterController
-        controller = GetComponent<CharacterController>();
-        // Find the GvrViewer on child 0
-        gvrViewer = transform.GetChild(0).GetComponent<GvrViewer>();
-        // Fnd the VR Head
-        vrHead = Camera.main.transform;
+        cc= GetComponent<CharacterController>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        // In the Google VR button press
-        if (GvrController.IsTouching)
+        //Check if Vr Cameria is below 30 but not above 90 degrees
+
+        if (vrCamera.eulerAngles.x >= toggleAngle && vrCamera.eulerAngles.x < 90.0f)
         {
-            // Change the state of moveForward
-            moveForward = !moveForward;
-            
+            moveForward = true;
+        }
+        else
+        {
+            moveForward = false;
         }
 
-        // Check to see if I should move
+        if (GvrController.IsTouching)
+        {
+            moveForward = true;
+        }
+
         if (moveForward)
         {
-            // Find the forward direction
-            Vector3 forward = vrHead.TransformDirection(Vector3.forward);
-            // Tell CharacterController to move forward
-            controller.SimpleMove(forward * speed);
-            
+            //Vector3 forward = vrCamera.TransformDirection(Vector3.forward);
+
+            Vector3 forward2 = GvrController.Orientation * Vector3.forward;
+
+            //cc.SimpleMove(forward * speed);
+
+            cc.SimpleMove(forward2 * speed);
         }
-    }
+
+    }    
 }
